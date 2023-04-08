@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/neaas/go-openvswitch/ovs"
-	"github.com/willfantom/neslink"
+	"github.com/neaas/neslink"
 )
 
 // LAAttachBridge produces an action that when run will add an existing bridge

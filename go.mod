@@ -1,4 +1,4 @@
-module github.com/willfantom/neslink
+module github.com/neaas/neslink
 
 go 1.20
 

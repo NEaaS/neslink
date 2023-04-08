@@ -7,7 +7,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/willfantom/neslink"
+	"github.com/neaas/neslink"
 )
 
 // NPName returns a netns provider that provides the netns path for the docker
