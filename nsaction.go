@@ -113,7 +113,7 @@ func NASetLinkNs(lP LinkProvider, nsP NsProvider) NsAction {
 		f: func() error {
 			link, err := lP.Provide()
 			if err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			}
 			ns, err := nsP.Provide()
 			if err != nil {

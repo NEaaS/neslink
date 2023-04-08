@@ -40,7 +40,7 @@ func (la LinkAction) act() error {
 
 // LAGeneric allows for a custom LinkAction to be created and then used in a
 // LinkDo call.
-func LAGeneric(actionName string, provider LinkProvider, function func() error) LinkAction {
+func LAGeneric(actionName string, function func() error) LinkAction {
 	if actionName == "" {
 		actionName = "unnamed-link-action"
 	}
@@ -169,7 +169,7 @@ func LADelete(provider LinkProvider) LinkAction {
 		actionName: "delete-link",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.LinkDel(l)
 			}
@@ -182,7 +182,7 @@ func LASetName(provider LinkProvider, name string) LinkAction {
 		actionName: "set-name",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.LinkSetName(l, name)
 			}
@@ -195,7 +195,7 @@ func LASetAlias(provider LinkProvider, alias string) LinkAction {
 		actionName: "set-alias",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.LinkSetAlias(l, alias)
 			}
@@ -208,7 +208,7 @@ func LASetHw(provider LinkProvider, addr string) LinkAction {
 		actionName: "set-hw",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				hwAddr, err := net.ParseMAC(addr)
 				if err != nil {
@@ -225,7 +225,7 @@ func LASetUp(provider LinkProvider) LinkAction {
 		actionName: "set-state-up",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.LinkSetUp(l)
 			}
@@ -238,7 +238,7 @@ func LASetDown(provider LinkProvider) LinkAction {
 		actionName: "set-state-down",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.LinkSetDown(l)
 			}
@@ -251,7 +251,7 @@ func LASetPromiscOn(provider LinkProvider) LinkAction {
 		actionName: "set-promisc-on",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.SetPromiscOn(l)
 			}
@@ -264,7 +264,7 @@ func LASetPromiscOff(provider LinkProvider) LinkAction {
 		actionName: "set-promisc-off",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				return netlink.SetPromiscOff(l)
 			}
@@ -277,7 +277,7 @@ func LAAddAddr(provider LinkProvider, cidr string) LinkAction {
 		actionName: "add-address",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				addr, err := netlink.ParseAddr(cidr)
 				if err != nil {
@@ -294,7 +294,7 @@ func LADelAddr(provider LinkProvider, cidr string) LinkAction {
 		actionName: "del-address",
 		f: func() error {
 			if l, err := provider.Provide(); err != nil {
-				return errors.Join(errNoLink, err)
+				return errors.Join(ErrNoLink, err)
 			} else {
 				addr, err := netlink.ParseAddr(cidr)
 				if err != nil {
