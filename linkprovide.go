@@ -12,7 +12,7 @@ type LinkProvider struct {
 }
 
 var (
-	errNoLink error = errors.New("failed to obtain link from provider")
+	ErrNoLink error = errors.New("failed to obtain link from provider")
 )
 
 // Provide determines the network namespace path based on the provider's
@@ -22,6 +22,17 @@ var (
 // not opened.
 func (lp LinkProvider) Provide() (netlink.Link, error) {
 	return lp.f()
+}
+
+// LPGeneric provides the means to create custom providers.
+func LPGeneric(providerName string, function func() (netlink.Link, error)) LinkProvider {
+	if providerName == "" {
+		providerName = "unnamed-link-provider"
+	}
+	return LinkProvider{
+		name: providerName,
+		f:    function,
+	}
 }
 
 // LPName creates a link provider that when called, will provide the
