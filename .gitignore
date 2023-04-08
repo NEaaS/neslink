@@ -1,5 +1,1 @@
 .vscode/
-examples/
-!examples/linkdo/linkdo.go
-!examples/nescript/nescript.go
-!examples/nsdo/nsdo.go
