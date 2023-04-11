@@ -6,9 +6,9 @@ import (
 	"os"
 	"path"
 
+	"github.com/neaas/nescript"
+	"github.com/neaas/nescript/local"
 	"github.com/vishvananda/netlink"
-	"github.com/willfantom/nescript"
-	"github.com/willfantom/nescript/local"
 	"golang.org/x/sys/unix"
 )
 
@@ -159,7 +159,7 @@ func NAExecNescript(script nescript.Script, subcommand []string, process *nescri
 	return NsAction{
 		actionName: "exec-nescript",
 		f: func() error {
-			p, err := script.Exec(local.Executor("", subcommand))
+			p, err := script.Cmd().Exec(local.Executor(""))
 			if err != nil {
 				return err
 			}

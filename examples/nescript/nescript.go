@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/willfantom/nescript"
-	"github.com/willfantom/neslink"
+	"github.com/neaas/nescript"
+	"github.com/neaas/neslink"
 )
 
 func main() {
