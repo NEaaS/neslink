@@ -6,9 +6,17 @@ package neslink
 import (
 	"fmt"
 	"os"
-
-	"golang.org/x/sys/unix"
 )
+
+// Inode provides the inode of the network namespace file.
+func (n NsFd) Inode() (uint64, error) {
+	return 0, fmt.Errorf("failed to obtain file info")
+}
+
+// Dev descirbes the device in which the network ns file resides.
+func (n NsFd) Dev() (uint64, error) {
+	return 0, fmt.Errorf("failed to obtain file info")
+}
 
 // close closes the file descriptor. This should be used to clean up any opned
 // file descriptor.

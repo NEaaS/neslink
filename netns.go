@@ -1,6 +1,8 @@
 package neslink
 
-import "os"
+import (
+	"os"
+)
 
 // Namespace is a path to a file associated with a network namespace.
 type Namespace string

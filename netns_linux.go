@@ -9,6 +9,24 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// Inode provides the inode of the network namespace file.
+func (n NsFd) Inode() (uint64, error) {
+	fstat, err := n.fstat()
+	if err != nil {
+		return 0, fmt.Errorf("failed to obtain file info: %w", err)
+	}
+	return fstat.Ino, nil
+}
+
+// Dev descirbes the device in which the network ns file resides.
+func (n NsFd) Dev() (uint64, error) {
+	fstat, err := n.fstat()
+	if err != nil {
+		return 0, fmt.Errorf("failed to obtain file info: %w", err)
+	}
+	return fstat.Dev, nil
+}
+
 // close closes the file descriptor. This should be used to clean up any opned
 // file descriptor.
 func (n NsFd) close() error {
@@ -32,4 +50,12 @@ func (ns Namespace) open() (NsFd, error) {
 // descriptor.
 func (ns NsFd) set() error {
 	return unix.Setns(ns.Int(), unix.CLONE_NEWNET)
+}
+
+func (n NsFd) fstat() (*unix.Stat_t, error) {
+	var fstat unix.Stat_t
+	if err := unix.Fstat(n.Int(), &fstat); err != nil {
+		return nil, err
+	}
+	return &fstat, nil
 }
