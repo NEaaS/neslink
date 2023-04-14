@@ -37,6 +37,11 @@ func (t Task) Task() int {
 	return t.taskID
 }
 
+// RootTask returns true if the task and process ids are equal.
+func (t Task) RootTask() bool {
+	return t.taskID == t.processID
+}
+
 // NsDev returns the network ns Dev ID for the task.
 func (t Task) NsDev() uint64 {
 	return t.netnsDev
