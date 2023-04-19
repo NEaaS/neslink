@@ -305,3 +305,52 @@ func LADelAddr(provider LinkProvider, cidr string) LinkAction {
 		},
 	}
 }
+
+// LAAddNetem when acted on will add a netem qdisc to the given link. This
+// imposes synthetc limits on latency, jitter (in µs), and loss (as %).
+func LAAddNetem(provider LinkProvider, latency, jitter uint32, loss float32) LinkAction {
+	return LinkAction{
+		actionName: "add-netem",
+		f: func() error {
+			if l, err := provider.Provide(); err != nil {
+				return errors.Join(ErrNoLink, err)
+			} else {
+				netem := netlink.NewNetem(netlink.QdiscAttrs{
+					LinkIndex: l.Attrs().Index,
+					Parent:    netlink.HANDLE_ROOT,
+				}, netlink.NetemQdiscAttrs{
+					Latency: latency,
+					Loss:    loss,
+					Jitter:  jitter,
+				})
+				if netem == nil {
+					return fmt.Errorf("netem qdisc could not be created")
+				}
+				return netlink.QdiscAdd(netem)
+			}
+		},
+	}
+}
+
+// LAAddTbf when acted on will add a token bucket filter qdisc to the given
+// link. This will limit the bandwidth of the link (bits/s).
+func LAAddTbf(provider LinkProvider, bw uint64) LinkAction {
+	return LinkAction{
+		actionName: "add-tbf",
+		f: func() error {
+			if l, err := provider.Provide(); err != nil {
+				return errors.Join(ErrNoLink, err)
+			} else {
+				tbf := netlink.Tbf{
+					QdiscAttrs: netlink.QdiscAttrs{
+						LinkIndex: l.Attrs().Index,
+						Parent:    netlink.HANDLE_ROOT,
+					},
+					Rate:   bw / 8,
+					Buffer: 125000,
+				}
+				return netlink.QdiscAdd(&tbf)
+			}
+		},
+	}
+}
