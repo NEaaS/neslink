@@ -25,7 +25,7 @@ require (
 )
 
 require (
-	github.com/docker/docker v24.0.2+incompatible
+	github.com/docker/docker v24.0.3+incompatible
 	github.com/neaas/go-openvswitch v0.1.0
 	github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae // indirect
 )
