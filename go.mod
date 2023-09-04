@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/neaas/nescript v0.0.0-20230410102610-fed447d1f2d9
 	github.com/vishvananda/netlink v1.2.1-beta.2
-	golang.org/x/sys v0.8.0
+	golang.org/x/sys v0.12.0
 )
 
 require (
