@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/neaas/neslink"
 )
@@ -16,7 +16,7 @@ func NPName(cli *client.Client, containerName string) neslink.NsProvider {
 	return neslink.NPGeneric(
 		"docker-container-name",
 		func() (neslink.Namespace, error) {
-			containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+			containers, err := cli.ContainerList(context.Background(), container.ListOptions{})
 			if err != nil {
 				return neslink.Namespace(""), fmt.Errorf("failed to get container list:  %w", err)
 			}
