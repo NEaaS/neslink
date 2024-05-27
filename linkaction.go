@@ -28,6 +28,12 @@ func (la LinkAction) ActionName() string {
 	return la.actionName
 }
 
+// Do will execute the link action, performing the operation on the link. If an
+// error occurs during the operation, it will be returned.
+func (la LinkAction) Do() error {
+	return la.act()
+}
+
 // name simply returns the name of the link action.
 func (la LinkAction) name() string {
 	return la.actionName
