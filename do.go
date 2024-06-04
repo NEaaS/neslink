@@ -24,6 +24,29 @@ var (
 // thread fails to be reverted to the network namespace of the caller, the
 // thread is considered dirty and is never unlocked (thus can not be reused).
 func Do(nsP NsProvider, actions ...Action) error {
+	// 1. get new network namespace fd to switch to
+	targetNs, err := nsP.Provide()
+	if err != nil {
+		return fmt.Errorf("failed to get target netns: %w", err)
+	}
+	targetNsFd, err := targetNs.open()
+	if err != nil {
+		return fmt.Errorf("failed to open the target netns file descriptor: %w", err)
+	}
+	defer targetNsFd.close()
+
+	return DoFd(targetNsFd, actions...)
+}
+
+// DoFd executes a given set of actions in a specified network namespace. It
+// does so in a separate OS thread in order to allow the rest of the program to
+// continue on the current network namespace. An error is returned if any netns
+// move fails or any provided action fails. Do note that if the spawned system
+// thread fails to be reverted to the network namespace of the caller, the
+// thread is considered dirty and is never unlocked (thus can not be reused).
+// This function is useful when the network namespace file descriptor is
+// already available and can be passed directly. Otherwise, Do should be used.
+func DoFd(targetNsFd NsFd, actions ...Action) error {
 	// 1. get origin network namespace fd to revert back to
 	originNs, err := NPNow().Provide()
 	if err != nil {
@@ -35,22 +58,11 @@ func Do(nsP NsProvider, actions ...Action) error {
 	}
 	defer originNsFd.close()
 
-	// 2. get new network namespace fd to switch to
-	targetNs, err := nsP.Provide()
-	if err != nil {
-		return fmt.Errorf("failed to get target netns: %w", err)
-	}
-	targetNsFd, err := targetNs.open()
-	if err != nil {
-		return fmt.Errorf("failed to open the target netns file descriptor: %w", err)
-	}
-	defer targetNsFd.close()
-
-	// 3. create error channel for new routine
+	// 2. create error channel for new routine
 	errChan := make(chan error, 1)
 	defer close(errChan)
 
-	// 4. create new go routine
+	// 3. create new go routine
 	go func(oNs, tNs NsFd, actions ...Action) {
 
 		// 1. lock os thread for goroutine
@@ -90,7 +102,7 @@ func Do(nsP NsProvider, actions ...Action) error {
 
 	}(originNsFd, targetNsFd, actions...)
 
-	// 5. get error from goroutine and return
+	// 4. get error from goroutine and return
 	return <-errChan
 }
 
